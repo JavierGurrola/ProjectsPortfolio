@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 # prompts the user to confirm before cleansing the data
 echo "Ready to clean the data? [1/0]"
 read cleancontinue

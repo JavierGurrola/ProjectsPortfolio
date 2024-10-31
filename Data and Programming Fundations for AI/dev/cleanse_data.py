@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import sqlite3
 import pandas as pd
 import ast
@@ -31,8 +28,8 @@ def cleanse_student_table(df):
 
     """
     now = pd.to_datetime('now')
-    df['age'] = (now - pd.to_datetime(df['dob'])).astype('<m8[Y]')
-    df['age_group'] = np.int64((df['age']/10))*10
+    df['age'] = (now - pd.to_datetime(df['dob'])).dt.days // 365.25
+    df['age_group'] = np.int64((df['age'] / 10)) * 10
 
     df['contact_info'] = df["contact_info"].apply(lambda x: ast.literal_eval(x))
     explode_contact = pd.json_normalize(df['contact_info'])
@@ -59,7 +56,7 @@ def cleanse_student_table(df):
     df['current_career_path_id'] = np.where(df['current_career_path_id'].isnull(), 0, df['current_career_path_id'])
     df['time_spent_hrs'] = np.where(df['time_spent_hrs'].isnull(), 0, df['time_spent_hrs'])
 
-    return(df, missing_data)
+    return df, missing_data
 
 
 def cleanse_career_path(df):
@@ -73,11 +70,9 @@ def cleanse_career_path(df):
         df (DataFrame): cleaned version of the input table
 
     """
-    not_applicable = {'career_path_id': 0,
-                      'career_path_name': 'not applicable',
-                      'hours_to_complete': 0}
+    not_applicable = {'career_path_id': 0, 'career_path_name': 'not applicable', 'hours_to_complete': 0}
     df.loc[len(df)] = not_applicable
-    return(df.drop_duplicates())
+    return df.drop_duplicates()
 
 
 def cleanse_student_jobs(df):
@@ -91,7 +86,7 @@ def cleanse_student_jobs(df):
         df (DataFrame): cleaned version of the input table
 
     """
-    return(df.drop_duplicates())
+    return df.drop_duplicates()
 
 
 def test_for_path_id(students, career_paths):
@@ -151,7 +146,7 @@ def test_nulls(df):
         None
     """
     df_missing = df[df.isnull().any(axis=1)]
-    cnt_missing =len(df_missing)
+    cnt_missing = len(df_missing)
 
     try:
         assert cnt_missing == 0, "There are " + str(cnt_missing) + " nulls in the table"
