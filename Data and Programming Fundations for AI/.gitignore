@@ -1,0 +1,8 @@
+.idea/
+.venv/
+.DS_Store
+dev/cademycode_cleansed.csv
+dev/cademycode_cleansed.db
+dev/cleanse_db.log
+prod/cademycode_cleansed.csv
+prod/cademycode_cleansed.db
